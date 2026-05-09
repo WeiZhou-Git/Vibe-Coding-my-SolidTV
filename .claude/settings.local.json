@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm tsc *)",
+      "Bash(where node *)",
+      "Bash(/e/nvm/nvm.exe use *)",
+      "Bash(/e/nvm/v22.12.0/node.exe *)",
+      "Bash(export PATH=\"/e/nvm/v22.12.0:$PATH\")",
+      "Bash(npx tsc *)"
+    ]
+  }
+}
