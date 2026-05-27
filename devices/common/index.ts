@@ -1,4 +1,5 @@
 import { WebGlCoreRenderer, SdfTextRenderer } from "@lightningjs/renderer/webgl";
+import { CanvasTextRenderer } from "@lightningjs/renderer/canvas";
 import { Inspector } from "@lightningjs/renderer/inspector";
 import { DeviceCommon } from "./device";
 
@@ -16,13 +17,13 @@ export const config = {
   lightning: {
     debug: false,
     focusDebug: false,
-    fontSettings: { fontFamily: "Roboto", color: 0xffffffff, fontSize: 40 },
+    fontSettings: { fontFamily: "NotoSans", color: 0xffffffff, fontSize: 40 },
     animationSettings: { easing: "ease-out", duration: 300 },
     rendererOptions: {
       appHeight: 1080,
       appWidth: 1920,
       numImageWorkers: 2,
-      fontEngines: [SdfTextRenderer],
+      fontEngines: [SdfTextRenderer, CanvasTextRenderer],
       renderEngine: WebGlCoreRenderer,
       inspector: import.meta.env.DEV ? Inspector : undefined,
       // 720p = 0.666667, 1080p = 1, 1440p = 1.5, 2160p = 2
@@ -42,7 +43,7 @@ export const config = {
     },
   },
   keys: {
-    Back: ["b", 66],
+    Back: ["b", "Escape", 66, 461],
     Left: ["ArrowLeft", 37],
     Right: ["ArrowRight", 39],
     Up: ["ArrowUp", 38],

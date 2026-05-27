@@ -1,4 +1,4 @@
-const basePath = ""; //import.meta.env.BASE_URL;
+const basePath = import.meta.env.BASE_URL;
 
 export default [
   {
@@ -18,5 +18,17 @@ export default [
     fontFamily: "Arial",
     atlasDataUrl: basePath + "fonts/Roboto-Regular.msdf.json",
     atlasUrl: basePath + "fonts/Roboto-Regular.msdf.png",
+  } as const,
+  {
+    fontFamily: "NotoSans",
+    fontUrl: basePath + "fonts/NotoSans-Regular.ttf",
+    descriptors: {},
+  } as const,
+  {
+    fontFamily: "NotoSans",
+    fontUrl: basePath + "fonts/NotoSans-Bold.ttf",
+    descriptors: {
+      weight: "700",
+    },
   } as const,
 ];

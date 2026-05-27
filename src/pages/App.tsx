@@ -29,11 +29,10 @@ const App = props => {
     <View
       ref={window.APP}
       onAnnouncer={() => (announcer.enabled = !announcer.enabled)}
-      onLast={() => history.back()}
+      onBack={() => history.back()}
       onPlayPause={() => navigate("/text")}
       onMenu={() => navigate("/")}
     >
-      <View color={0x071423ff} />
       {props.children}
     </View>
   );

@@ -53,6 +53,13 @@ export default defineConfig(({ mode }) => {
         "Cross-Origin-Opener-Policy": "same-origin",
         "Cross-Origin-Embedder-Policy": "require-corp",
       },
+      proxy: {
+        "/api/weather": {
+          target: "http://test.weather.ai-abc.com",
+          changeOrigin: true,
+          rewrite: (requestPath) => requestPath.replace(/^\/api\/weather/, "/api"),
+        },
+      },
     },
     test: {
       browser: {

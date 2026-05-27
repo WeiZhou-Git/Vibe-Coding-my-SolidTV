@@ -6,7 +6,11 @@
       "Bash(/e/nvm/nvm.exe use *)",
       "Bash(/e/nvm/v22.12.0/node.exe *)",
       "Bash(export PATH=\"/e/nvm/v22.12.0:$PATH\")",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "Bash(npx msdf-bmfont-xml *)",
+      "Bash(pnpm add *)",
+      "Bash(git checkout *)",
+      "Bash(pnpm remove *)"
     ]
   }
 }
