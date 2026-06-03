@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model ContentItem {
+  id           String   @id @default(cuid())
+  type         String
+  title        String
+  subtitle     String
+  meta         String
+  image        String
+  accent       String?
+  textureGroup String?  @map("texture_group")
+  category     String?
+  sortOrder    Int      @default(0) @map("sort_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@unique([type, title])
+  @@index([type, isActive, sortOrder])
+  @@map("content_items")
+}

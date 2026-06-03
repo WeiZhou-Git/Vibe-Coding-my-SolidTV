@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: solid-api-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: solid_api
+      POSTGRES_USER: solid_api
+      POSTGRES_PASSWORD: solid_api_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - solid_api_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U solid_api -d solid_api"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  solid_api_postgres_data:
