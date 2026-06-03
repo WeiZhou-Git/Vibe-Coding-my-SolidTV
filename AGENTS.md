@@ -1,82 +1,92 @@
 # AGENTS.md
 
-This file provides guidance to Codex (Codex.ai/code) when working with code in this repository.
+Guidance for Codex when working in this repository.
+
+## Repository Shape
+
+This is a pnpm Monorepo:
+
+```txt
+apps/
+  tv/   Lightning TV app built with SolidJS and @lightningtv/solid
+  api/  Fastify API with Prisma
+docs/   Lightning/Solid reference documentation
+```
+
+Run workspace commands from the repository root.
 
 ## Commands
 
 ```sh
-pnpm start          # Dev server (Vite)
-pnpm build          # Production build with sourcemaps
-pnpm build:analyze  # Bundle size visualizer
-pnpm test           # Run vitest (browser-based, WebKit)
-pnpm tsc            # TypeScript type check
-pnpm lint           # ESLint check
-pnpm lint-fix       # ESLint auto-fix
-pnpm preview        # Preview production build on port 8080
-pnpm storybook      # Start Storybook on port 6006
+pnpm install
 
-# Build for specific devices
-TARGET_DEVICE=lg    pnpm build   # LG webOS
-TARGET_DEVICE=tizen pnpm build   # Samsung Tizen
+pnpm dev:tv          # Start Vite frontend
+pnpm dev:api         # Start Fastify API
+
+pnpm build:tv        # Build frontend
+pnpm build:api       # Build backend
+pnpm build           # Build all packages with build scripts
+
+pnpm tsc:tv          # Typecheck frontend
+pnpm tsc:api         # Typecheck backend
+pnpm tsc             # Typecheck all packages with tsc scripts
+
+pnpm lint            # Lint frontend
+pnpm lint-fix        # Auto-fix frontend lint issues
+pnpm test            # Run frontend Vitest suite
+pnpm storybook       # Start frontend Storybook
+
+pnpm db:generate     # Prisma generate
+pnpm db:migrate      # Prisma migrate dev
+pnpm db:seed         # Prisma seed
+pnpm db:deploy       # Prisma migrate deploy
 ```
 
-## Project Overview
+Device builds:
 
-This is a **Lightning TV** app built with **SolidJS** — a WebGL-based TV application framework (no DOM). UI renders to canvas via `@lightningjs/renderer`. Interaction is via remote control direction keys.
-
-### Architecture
-
-```
-src/
-  index.tsx          # Entry: creates renderer, registers shaders, loads fonts, defines routes
-  pages/             # Route-level page components
-    App.tsx          # Root layout (focus manager, mouse, announcer, background)
-    HelloWorld.tsx   # Home page
-    Text.tsx         # Text demo page
-    NotFound.tsx     # 404
-  components/        # Reusable UI components
-    Button/          # Example component with storybook + test
-  styles.ts          # Shared style objects
-  fonts.ts           # Font loading config
-  translate.ts       # i18n via @solid-primitives/i18n (JSON-based)
-  test-utils.jsx     # Test renderer wrapper
-devices/             # Multi-device build system
-  common/            # Shared device configuration (keys, renderer options, shaders)
-  lg/                # LG webOS overrides
-  tizen/             # Samsung Tizen overrides
-  deviceConfigPlugin.js  # Vite plugin: swaps #devices/common import per TARGET_DEVICE
-environments/        # Vite env files (.env, .env.production, etc.)
+```sh
+TARGET_DEVICE=lg pnpm build:tv
+TARGET_DEVICE=tizen pnpm build:tv
 ```
 
-### Key Framework Rules
+## Frontend: `apps/tv`
 
-- No DOM elements (`<div>`, `<span>`) — use `<View>`, `<Text>`, `<Row>`, `<Column>`
-- No CSS (`class`, `className`, `style={{}}`) — pass props directly
-- Colors must be hex strings with alpha: `"#ff0000ff"` (no named colors like `"red"`)
-- Background color = `color` prop (not `background`)
-- All nodes default to `position: absolute`; use `display: "flex"` for flex layout
-- Directional padding not supported — only single `padding` number
-- Focus managed via `useFocusManager` — use `autofocus`, `onEnter`, `onFocusChanged`
-- Prefer `@lightningtv/solid` imports over `solid-js` for JSX (`moduleName` is aliased in Vite)
+Lightning TV app built with SolidJS. This is a WebGL/canvas renderer app, not a DOM web app.
 
-### Route Structure
+Important rules:
 
-Routes are defined in `src/index.tsx` using `@solidjs/router` with `HashRouter`:
+- Use `<View>`, `<Text>`, `<Row>`, `<Column>` and Lightning primitives, not DOM tags.
+- Do not use CSS classes or browser CSS layout assumptions.
+- Colors should be renderer-compatible hex strings with alpha, for example `"#ff0000ff"`.
+- Use `color` for background fills.
+- Focus is remote-control driven; use the app's `useFocusManager` pattern and explicit focus paths.
+- Keep Vite aliases local to `apps/tv`:
+  - `@/*` -> `apps/tv/src/*`
+  - `#devices/*` -> `apps/tv/devices/*`
 
-- `/` → `HelloWorld`
-- `/text` → `TextPage`
-- `/*all` → `NotFound`
+Main frontend paths:
 
-### Multi-Device Build
+```txt
+apps/tv/src/
+apps/tv/devices/
+apps/tv/public/
+apps/tv/environments/
+apps/tv/.storybook/
+```
 
-Set `TARGET_DEVICE=lg` or `TARGET_DEVICE=tizen` to build for specific platforms. The device config plugin swaps `#devices/common` → `#devices/{target}` via alias. Output goes to `dist/{device}/`.
+Routes are defined in `apps/tv/src/index.tsx` using `HashRouter`.
 
-### Path Aliases
+## Backend: `apps/api`
 
-- `@/*` → `src/*`
-- `#devices/*` → `devices/*`
-- `theme` → `./theme.js`
+Fastify API with Prisma.
 
-### Testing
+Main backend paths:
 
-Tests use `vitest` with Playwright (WebKit, headed by default). Button test example at `src/components/Button/Button.test.jsx`.
+```txt
+apps/api/src/
+apps/api/prisma/
+apps/api/Dockerfile
+apps/api/docker-compose.yml
+```
+
+Run `pnpm db:generate` after changing Prisma schema. The API package also runs `prisma generate` on install.
