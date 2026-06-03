@@ -1,0 +1,14 @@
+*
+!package.json
+!pnpm-lock.yaml
+!pnpm-workspace.yaml
+!apps/
+apps/*
+!apps/api/
+!apps/api/**
+apps/api/node_modules
+apps/api/dist
+apps/api/.env
+apps/api/.env.*
+!apps/api/.env.example
+!apps/api/.env.*.example
